@@ -15,7 +15,7 @@ export const matchService = {
 }
 
 
-async function query({ page = 1, filter, display = 'list' }) {
+async function query({ page = 1, filter }) {
     const pageSize = 20
     const skip = (page - 1) * pageSize
     const { playerId, outcome, score, players, competitorId } = filter
@@ -41,11 +41,9 @@ async function query({ page = 1, filter, display = 'list' }) {
             }
         }
 
-        console.log(display);
-
         const collection = await dbService.getCollection('match')
         const totalMatches = await collection.countDocuments(criteria)
-        const matches = display === 'dashboard' ? await collection.find(criteria).sort({ 'at': -1 }).toArray() : await collection.find(criteria).sort({ 'at': -1 }).skip(skip).limit(pageSize).toArray()
+        const matches = await collection.find(criteria).sort({ 'at': -1 }).skip(skip).limit(pageSize).toArray()
         return { data: matches, maxPage: Math.ceil(totalMatches / pageSize) }
     } catch (err) {
         logger.error('Cannot find matches', err)
@@ -89,7 +87,7 @@ async function add(match) {
 }
 
 async function update({ _id, type, players, win, loss, winScore, losScore, winSide, at }) {
-    const matchToUpdate = {type, players, win, loss, winScore, losScore, winSide, at }
+    const matchToUpdate = { type, players, win, loss, winScore, losScore, winSide, at }
     try {
         const collection = await dbService.getCollection('match')
         await collection.updateOne({ _id: ObjectId(_id) }, { $set: matchToUpdate })

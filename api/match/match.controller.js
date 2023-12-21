@@ -1,6 +1,7 @@
 import { logger } from "../../services/logger.service.js"
 import { socketService } from "../../services/socket.service.js"
 import { matchService } from "./match.service.js"
+import { matchMapService } from "./matchMap.service.js"
 
 export async function getMatches(req, res) {
     try {
@@ -11,6 +12,18 @@ export async function getMatches(req, res) {
     } catch (err) {
         logger.error('Failed to get matchs', err)
         res.status(500).send({ err: 'Failed to get matchs' })
+    }
+}
+
+export async function getMatchesMap(req, res) {
+    try {
+        const filter = req.query || null
+        logger.debug('Getting Matches map', filter)
+        const matchesMap = await matchMapService.queryMap(filter)
+        res.json(matchesMap)
+    } catch (err) {
+        logger.error('Failed to get matchs map', err)
+        res.status(500).send({ err: 'Failed to get matchs map' })
     }
 }
 

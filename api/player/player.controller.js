@@ -3,7 +3,6 @@ import { socketService } from "../../services/socket.service.js"
 import { playerService } from "./player.service.js"
 
 export async function getPlayers(req, res) {
-
     try {
         logger.debug('Getting Players')
         const players = await playerService.query()
@@ -15,7 +14,6 @@ export async function getPlayers(req, res) {
 }
 
 export async function getPlayerById(req, res) {
-
     try {
         const playerId = req.params.id
         const player = await playerService.getById(playerId)
